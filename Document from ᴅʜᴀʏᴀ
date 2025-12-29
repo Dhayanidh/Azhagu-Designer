@@ -1,0 +1,76 @@
+let cart = [];
+let measurements = [];
+
+// ADD TO CART
+document.querySelectorAll('.add-cart-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const productDiv = btn.parentElement;
+        const name = productDiv.querySelector('h3').innerText;
+        const price = parseInt(productDiv.querySelector('p').innerText);
+        cart.push({name, price});
+        updateCart();
+    });
+});
+
+// UPDATE CART LIST
+function updateCart() {
+    const cartList = document.getElementById('cart-list');
+    cartList.innerHTML = '';
+    let total = 0;
+    cart.forEach((item, index) => {
+        total += item.price;
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - ₹${item.price}`;
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.classList.add('delete-btn');
+        delBtn.onclick = () => { cart.splice(index,1); updateCart(); };
+        li.appendChild(delBtn);
+        cartList.appendChild(li);
+    });
+    document.getElementById('cart-total').innerText = total;
+}
+
+// MEASUREMENT FORM SUBMISSION
+document.getElementById('measurement-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const form = e.target;
+    const data = {
+        category: form.category.value,
+        chest: form.chest.value,
+        waist: form.waist.value,
+        hips: form.hips.value,
+        inseam: form.inseam.value
+    };
+    measurements.push(data);
+    updateMeasurements();
+    form.reset();
+});
+
+// UPDATE MEASUREMENTS LIST
+function updateMeasurements() {
+    const list = document.getElementById('measurement-list');
+    list.innerHTML = '';
+    measurements.forEach((m, i) => {
+        const li = document.createElement('li');
+        li.textContent = `${m.category} | Chest:${m.chest}, Waist:${m.waist}, Hips:${m.hips}, Inseam:${m.inseam}`;
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.classList.add('delete-btn');
+        delBtn.onclick = () => { measurements.splice(i,1); updateMeasurements(); };
+        li.appendChild(delBtn);
+        list.appendChild(li);
+    });
+}
+
+// HERO SLIDER
+let slides = document.querySelectorAll('.slider img');
+let currentSlide = 0;
+
+function nextSlide() {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add('active');
+}
+
+setInterval(nextSlide, 4000);
